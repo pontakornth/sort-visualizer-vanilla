@@ -48,6 +48,7 @@ function clearTimeoutQueue() {
 
 function drawBars(spec) {
     clearCanvas();
+    ctx.fillStyle = spec.color || "green"
     const rectangleWidth = canvas.width / spec.arr.length;
     for (let i = 0; i < spec.arr.length; i++) {
       const startX = rectangleWidth * i;
@@ -65,10 +66,23 @@ function drawAlgorithm(algorithm) {
     clearTimeoutQueue()
     const arr = shuffle(sampleArray)
     algorithm(arr, queue)
+    drawSatisfication()
+    // Animate
     queue.forEach((v, i) => {
         const handle = setTimeout(() => drawBars(v), i * duration)
         timeoutQueue.push(handle)
     })
+}
+
+function drawSatisfication() {
+    for (let i = 0; i < sampleArray.length; i++) {
+        ctx.fillStyle = "yellow"
+        queue.push({
+            arr: sampleArray,
+            colorIndexes: [...Array(i + 1).keys()],
+            color: "yellow"
+        })
+    }
 }
 
 // Algorithm
