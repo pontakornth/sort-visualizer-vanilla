@@ -67,6 +67,10 @@ function drawAlgorithm(algorithm) {
     const arr = shuffle(sampleArray)
     algorithm(arr, queue)
     drawSatisfication()
+    queue.push({
+        arr: sampleArray,
+        colorIndexes: [],
+    })
     // Animate
     queue.forEach((v, i) => {
         const handle = setTimeout(() => drawBars(v), i * duration)
