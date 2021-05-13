@@ -38,6 +38,11 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function clearTimeoutQueue() {
+    timeoutQueue.forEach(x => clearTimeout(x))
+    clearCanvas()
+}
+
 function drawBars(spec) {
     clearCanvas();
     const rectangleWidth = canvas.width / spec.arr.length;
