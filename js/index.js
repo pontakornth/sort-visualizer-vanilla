@@ -1,14 +1,15 @@
 const canvas = document.getElementById("visualizer")
 const ctx = canvas.getContext("2d")
-const queue = [] // Queue for drawing
+let queue = [] // Queue for drawing
 /*
 Quee item contain {
     arr: Array to draw,
     colorIndexes: Array of index that has special color,
 }
 */
-const timeoutQueue = [] // Timeout for clear drawing
+let timeoutQueue = [] // Timeout for clear drawing
 const amountItems = 16
+const duration = 40
 const sampleArray = [...Array(amountItems).keys()]
 
 // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -41,6 +42,8 @@ function clearCanvas() {
 function clearTimeoutQueue() {
     timeoutQueue.forEach(x => clearTimeout(x))
     clearCanvas()
+    timeoutQueue = []
+    queue = []
 }
 
 function drawBars(spec) {
@@ -58,7 +61,49 @@ function drawBars(spec) {
     }
 }
 
+function drawAlgorithm(algorithm) {
+    clearTimeoutQueue()
+    const arr = shuffle(sampleArray)
+    algorithm(arr, queue)
+    queue.forEach((v, i) => {
+        const handle = setTimeout(() => drawBars(v), i * duration)
+        timeoutQueue.push(handle)
+    })
+}
+
+// Algorithm
+function visualInsertionSort(arr, queue) {
+  for (let i = 1; i < arr.length; i++) {
+    key = arr[i];
+    prev = i - 1;
+    while (key < arr[prev] && prev >= 0) {
+      // Switch happen
+      queue.push({
+          arr: [...arr],
+          colorIndexes: [prev, prev + 1]
+      })
+      arr[prev + 1] = arr[prev];
+      console.log([...arr]);
+      prev -= 1;
+    }
+    queue.push({
+        arr: [...arr],
+        colorIndexes: [prev + 1]
+    })
+    arr[prev + 1] = key;
+  }
+  queue.push({
+      arr: [...arr],
+      colorIndexes: []
+  })
+}
+
 
 // Drawing part
 ctx.fillStyle = "green"
-drawBars({arr: sampleArray, colorIndexes: [0, 3]})
+drawBars({arr: sampleArray, colorIndexes: []})
+
+const insertionSortBtn = document.getElementById("insertion-sort")
+insertionSortBtn.addEventListener("click", () => {
+    drawAlgorithm(visualInsertionSort)
+})
