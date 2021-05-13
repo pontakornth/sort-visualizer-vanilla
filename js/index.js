@@ -98,12 +98,57 @@ function visualInsertionSort(arr, queue) {
   })
 }
 
+function visualBubbleSort(arr, queue) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[i]) {
+                queue.push({
+                    arr: [...arr],
+                    colorIndexes: [i, j]
+                })
+                temp = arr[j]
+                arr[j] = arr[i]
+                arr[i] = temp
+            }
+        }
+    }
+    queue.push({
+        arr: [...arr],
+        colorIndexes: []
+    })
+}
+
+function visualSelectionSort(arr, queue) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        let min_index = i
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[min_index]) {
+                min_index = j
+            }
+        }
+        queue.push({
+            arr: [...arr],
+            colorIndexes: [min_index, i]
+        })
+        temp = arr[min_index]
+        arr[min_index] = arr[i]
+        arr[i] =  temp
+    }
+    queue.push({
+        arr: [...arr],
+        colorIndexes: []
+    })
+}
 
 // Drawing part
 ctx.fillStyle = "green"
 drawBars({arr: sampleArray, colorIndexes: []})
 
-const insertionSortBtn = document.getElementById("insertion-sort")
-insertionSortBtn.addEventListener("click", () => {
-    drawAlgorithm(visualInsertionSort)
-})
+function registerButton(name, alogrithm) {
+    const button = document.getElementById(name)
+    button.addEventListener("click", () => drawAlgorithm(alogrithm))
+}
+
+registerButton("insertion-sort", visualInsertionSort)
+registerButton("bubble-sort", visualBubbleSort)
+registerButton("selection-sort", visualSelectionSort)
